@@ -7,9 +7,9 @@ public class DrawLine {
         if(screen == null || !isValid(width, x1, x2, y) || isOutOfBounds(width, x1, x2)) {
             throw new IllegalArgumentException();
         }
-        int startIndex = getByteIndex(y, width, x1);
+        int startIndex = getByteIndex(screen, width, x1, y);
         int startBit = getBitIndex(x1);
-        int endIndex = getByteIndex(y, width, x2);
+        int endIndex = getByteIndex(screen, width, x2, y);
         int endBit = getBitIndex(x2);
         byte startByte = screen[startIndex];
         if(startIndex == endIndex) {
@@ -28,10 +28,12 @@ public class DrawLine {
         }
         return screen;
     }
-    private static int getByteIndex(int row, int width, int x) {
+    private static int getByteIndex(byte[] screen, int width, int x, int y) {
         int bytesPerRow = width / 8;
+        int height = screen.length / bytesPerRow;
+        int row = (height - 1) - y;
         int indexOfByteInRow = x / 8;
-        return (row * bytesPerRow) + indexOfByteInRow;
+        return row * bytesPerRow + indexOfByteInRow;
     }
     private static int getBitIndex(int x) {
         return x % 8;
@@ -89,7 +91,7 @@ public class DrawLine {
         for (int i = 0; i < size; i++) {
             screen[i] = (byte) 0;
         }
-        screen = drawLine(screen, width, 2, 21, 6);
+        screen = drawLine(screen, width, 1, 18, 6);
         printScreen(screen, width);
     }
 }
